@@ -75,8 +75,15 @@ def t_error(t):
 def p_error(p):
     raise ExprSyntaxError('pattern', p or FakePattern(lexpos=-1,value='(EOF)'))
 
+class NullLogger:
+    def info(*___):
+        return lambda *__,**_:None
+    debug=info
+    warning=info
+    error=info
+    
 lexer=lex.lex()
-parser=yacc.yacc(start='expr')
+parser=yacc.yacc(start='expr',debuglog=NullLogger,errorlog=NullLogger)
 
 if __name__=='__main__':
     print(parser.parse('5 Fe2(SO4)3',lexer=lexer))

@@ -3,3 +3,4 @@ __pycache__/
 *.pyc
 /parser.out
 /parsetab.py
+/build/
