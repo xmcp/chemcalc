@@ -37,12 +37,12 @@ class ExprSyntaxError(Exception):
 
 FakePattern=namedtuple('Pattern', ['lexpos', 'value'])
 
-tokens=('TOK','CNT')
-literals=('(',')')
-precedence=(
-    ('left','plus'),
-    ('nonassoc','multiply'),
-)
+tokens=['TOK','CNT']
+literals= ['(', ')']
+precedence= [
+    ('left', 'plus'),
+    ('nonassoc', 'multiply'),
+]
 
 t_ignore=' '
 t_TOK='[A-Z][a-z]?'
@@ -75,8 +75,8 @@ def t_error(t):
 def p_error(p):
     raise ExprSyntaxError('pattern', p or FakePattern(lexpos=-1,value='(EOF)'))
 
-lex.lex()
-yacc.yacc(start='expr')
+lexer=lex.lex()
+parser=yacc.yacc(start='expr')
 
 if __name__=='__main__':
-    print(yacc.parse('5 Fe2(SO4)3'))
+    print(parser.parse('5 Fe2(SO4)3',lexer=lexer))
