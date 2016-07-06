@@ -2,11 +2,20 @@
 from chemparser import *
 from ply import lex, yacc
 from chem_weight import weight
-def proc(mat: Materials):
-    return sum(map((lambda tok_cnt: weight[tok_cnt[0]]*tok_cnt[1]), mat.mats.items()))
+from fractions import Fraction
 
-#tokens+=['NUMBER']
+def proc(mat: Materials):
+    return Fraction(sum(
+        map((lambda tok_cnt: weight[tok_cnt[0]]*tok_cnt[1]), mat.mats.items())
+    ))
+
 literals+=['+','-','*','/','[',']']
+
+tokens+=['DECIMAL']
+def t_DECIMAL(t):
+    r"""\d*\.\d*"""
+    t.value=Fraction(t.value)
+    return t
 
 precedence+=[
     ('left','calc_lazy'),
@@ -18,7 +27,8 @@ def p_math_fromexpr(p):
     p[0]=proc(p[2])
 
 def p_math_fromnumber(p):
-    """math : CNT"""
+    """math : CNT
+            | DECIMAL """
     p[0]=p[1]
 
 def p_math_primary_school(p):
@@ -41,4 +51,12 @@ lexer=lex.lex()
 parser=yacc.yacc(start='math')
 
 if __name__=='__main__':
-    print(parser.parse('304 * [Fe] / [FeSO4]',lexer=lexer))
+    while True:
+        try:
+            result=parser.parse(input('calc > '),lexer=lexer)
+        except Exception as e:
+            print(' [ERROR] %s'%e)
+        else:
+            print(' = %s (%.5f)'%(result,result))
+        finally:
+            print()
