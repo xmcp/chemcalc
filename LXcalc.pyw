@@ -4,12 +4,12 @@ from tkinter.ttk import *
 from chemcalc import parser
 
 tk=Tk()
-tk.title('LiangXin Calculator')
+tk.title('LiangXin™ Calculator by @xmcp')
 tk.resizable(False,False)
 
 var=StringVar()
-result=StringVar()
-tips=StringVar()
+result=StringVar(value='ChemCalc Powered')
+tips=StringVar(value='https://github.com/xmcp/chemcalc')
 
 NORMAL='#000000'
 GRAY='#999999'
@@ -25,8 +25,8 @@ def calc(*_):
         outp['foreground']=NORMAL
         tips.set('≈ %.5f'%res)
 
-inp=Entry(tk,textvariable=var,width=30,font='Consolas -22')
-inp.grid(row=0,column=0,pady=10,padx=25)
+inp=Entry(tk,textvariable=var,width=40,font='Consolas -22')
+inp.grid(row=0,column=0,pady=10,padx=20)
 inp.bind('<KeyPress>',lambda *_:tk.after(1,calc))
 
 outp=Label(tk,textvariable=result,font='Consolas -26',foreground=NORMAL)

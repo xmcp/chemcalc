@@ -1,6 +1,7 @@
 #coding=utf-8
 from ply import lex, yacc
 from collections import namedtuple
+from fractions import Fraction
 
 class Materials:
     def __init__(self,item=None):
@@ -47,8 +48,8 @@ precedence= [
 t_ignore=' '
 t_TOK='[A-Z][a-z]?'
 def t_CNT(t):
-    r"""\d+"""
-    t.value=int(t.value)
+    r"""[\d\.]+"""
+    t.value=Fraction(t.value)
     return t
 
 def p_material_fromtoken(p):

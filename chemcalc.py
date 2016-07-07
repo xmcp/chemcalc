@@ -11,9 +11,6 @@ def proc(mat: Materials):
 
 literals+=['+','-','*','/','[',']']
 
-tokens+=['DECIMAL']
-t_DECIMAL=r"""\d*\.\d*"""
-
 precedence+=[
     ('left','calc_lazy'),
     ('left','calc_rapid'),
@@ -24,9 +21,8 @@ def p_math_fromexpr(p):
     p[0]=proc(p[2])
 
 def p_math_fromnumber(p):
-    """math : CNT
-            | DECIMAL """
-    p[0]=Fraction(p[1])
+    """math : CNT """
+    p[0]=p[1]
 
 def p_math_lazy(p):
     """math : math '+' math
