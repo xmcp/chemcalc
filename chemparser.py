@@ -9,7 +9,7 @@ class Materials:
 
     @classmethod
     def from_mats(cls,mats):
-        obj=Materials()
+        obj=cls()
         obj.mats=mats
         return obj
 
@@ -36,7 +36,7 @@ class ExprSyntaxError(Exception):
     def __str__(self):
         return 'Invalid %s %r at position %d'%(self.typ,self.value,self.pos)
 
-FakePattern=namedtuple('Pattern', ['lexpos', 'value'])
+FakePattern=namedtuple('Pattern', ['lexpos', 'value']) # eof handling
 
 tokens=['TOK','CNT']
 literals= ['(', ')']
@@ -46,7 +46,7 @@ precedence= [
 ]
 
 t_ignore=' '
-t_TOK='[A-Z][a-z]?'
+t_TOK='[A-Z][a-z]{0,2}'
 def t_CNT(t):
     r"""[\d\.]+"""
     t.value=Fraction(t.value)

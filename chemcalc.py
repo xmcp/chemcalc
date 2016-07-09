@@ -4,7 +4,7 @@ from ply import lex, yacc
 from chem_weight import weight
 from fractions import Fraction
 
-def proc(mat: Materials):
+def proc(mat: Materials): # calc weight
     return Fraction(sum(
         map((lambda tok_cnt: weight[tok_cnt[0]]*tok_cnt[1]), mat.mats.items())
     ))
@@ -40,17 +40,9 @@ def p_math_rapid(p):
         '/': lambda a,b: a/b,
     }[p[2]](p[1],p[3])
 
-    
 def p_math_braces(p):
     """math : '(' math ')'"""
     p[0]=p[2]
-
-class NullLogger:
-    def info(*___):
-        return lambda *__,**_:None
-    debug=info
-    warning=info
-    error=info
     
 lexer=lex.lex()
 parser=yacc.yacc(start='math',debuglog=NullLogger,errorlog=NullLogger)
@@ -58,10 +50,9 @@ parser=yacc.yacc(start='math',debuglog=NullLogger,errorlog=NullLogger)
 if __name__=='__main__':
     while True:
         try:
+            print()
             result=parser.parse(input('calc > '),lexer=lexer)
         except Exception as e:
-            print(' [ERROR] %s'%e)
+            print(' [ERROR] %s %s'%(type(e),e))
         else:
             print(' = %s (%.5f)'%(result,result))
-        finally:
-            print()
