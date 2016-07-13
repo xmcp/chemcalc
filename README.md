@@ -16,6 +16,8 @@
 >>> import chemcalc
 >>> chemcalc.parser.parse('304 * [Fe] / [FeSO4]')
 Fraction(112, 1)
+>>> chemcalc.parser.parse('304 * Fe / FeSO4') # v1.8新特性
+Fraction(112, 1)
 ```
 
 ## 附赠：良心™计算器
