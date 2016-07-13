@@ -17,6 +17,10 @@ precedence+=[
 ]
 
 def p_math_fromexpr(p):
+    """math : expr"""
+    p[0]=proc(p[1])
+
+def p_math_legacyexpr(p):
     """math : '[' expr ']'"""
     p[0]=proc(p[2])
 
