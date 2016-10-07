@@ -9,15 +9,21 @@ def proc(mat: Materials): # calc weight
         map((lambda tok_cnt: weight[tok_cnt[0]]*tok_cnt[1]), mat.mats.items())
     ))
 
-literals+=['+','-','*','/','[',']']
+tokens+=['ADD','SUB','MUL','DIV','EXP']
+t_ADD=r'\+'
+t_SUB=r'-'
+t_MUL=r'\*'
+t_DIV=r'/'
+t_EXP=r'[eE]'
 
 precedence+=[
-    ('left','calc_rapid'),
-    ('left','calc_lazy'),
+    ('left','ADD','SUB'),
+    ('left','MUL','DIV'),
+    ('nonassoc','calc_eval','EXP'),
 ]
 
 def p_math_fromexpr(p):
-    """math : expr"""
+    """math : expr %prec calc_eval"""
     p[0]=proc(p[1])
 
 def p_math_legacyexpr(p):
@@ -27,19 +33,26 @@ def p_math_legacyexpr(p):
 def p_math_fromnumber(p):
     """math : CNT """
     p[0]=p[1]
+def p_math_fromexp(p):
+    """math : CNT EXP math"""
+    p[0]=p[1]*(10**p[3])
 
 def p_math_add(p):
-    """math : math '+' math %prec calc_lazy """
+    """math : math ADD math"""
     p[0]=p[1]+p[3]
 def p_math_sub(p):
-    """math : math '-' math %prec calc_lazy """
+    """math : math SUB math"""
     p[0]=p[1]-p[3]
 def p_math_mul(p):
-    """math : math '*' math %prec calc_rapid """
+    """math : math MUL math"""
     p[0]=p[1]*p[3]
 def p_math_div(p):
-    """math : math '/' math %prec calc_rapid """
+    """math : math DIV math"""
     p[0]=p[1]/p[3]
+
+def p_math_neg(p):
+    """math : SUB math %prec calc_eval """
+    p[0]=-p[2]
 
 def p_math_braces(p):
     """math : '(' math ')'"""
