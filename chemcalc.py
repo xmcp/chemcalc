@@ -12,8 +12,8 @@ def proc(mat: Materials): # calc weight
 literals+=['+','-','*','/','[',']']
 
 precedence+=[
-    ('left','calc_lazy'),
     ('left','calc_rapid'),
+    ('left','calc_lazy'),
 ]
 
 def p_math_fromexpr(p):
@@ -28,21 +28,18 @@ def p_math_fromnumber(p):
     """math : CNT """
     p[0]=p[1]
 
-def p_math_lazy(p):
-    """math : math '+' math
-            | math '-' math %prec calc_lazy """
-    p[0]={
-        '+': lambda a,b: a+b,
-        '-': lambda a,b: a-b,
-    }[p[2]](p[1],p[3])
-
-def p_math_rapid(p):
-    """math : math '*' math
-            | math '/' math %prec calc_rapid """
-    p[0]={
-        '*': lambda a,b: a*b,
-        '/': lambda a,b: a/b,
-    }[p[2]](p[1],p[3])
+def p_math_add(p):
+    """math : math '+' math %prec calc_lazy """
+    p[0]=p[1]+p[3]
+def p_math_sub(p):
+    """math : math '-' math %prec calc_lazy """
+    p[0]=p[1]-p[3]
+def p_math_mul(p):
+    """math : math '*' math %prec calc_rapid """
+    p[0]=p[1]*p[3]
+def p_math_div(p):
+    """math : math '/' math %prec calc_rapid """
+    p[0]=p[1]/p[3]
 
 def p_math_braces(p):
     """math : '(' math ')'"""
