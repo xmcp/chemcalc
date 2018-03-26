@@ -9,12 +9,15 @@ def proc(mat: Materials): # calc weight
         map((lambda tok_cnt: weight[tok_cnt[0]]*tok_cnt[1]), mat.mats.items())
     ))
 
-tokens+=['ADD','SUB','MUL','DIV','EXP']
+global_last=0
+    
+tokens+=['ADD','SUB','MUL','DIV','EXP','LAST']
 t_ADD=r'\+'
 t_SUB=r'-'
 t_MUL=r'\*'
 t_DIV=r'/'
 t_EXP=r'[eE]'
+t_LAST=r'_'
 
 precedence+=[
     ('left','ADD','SUB'),
@@ -33,10 +36,13 @@ def p_math_legacyexpr(p):
 def p_math_fromnumber(p):
     """math : CNT """
     p[0]=p[1]
+def p_math_fromlast(p):
+    """math : LAST """
+    p[0]=global_last
 def p_math_fromexp(p):
     """math : CNT EXP math"""
     p[0]=p[1]*(10**p[3])
-
+    
 def p_math_add(p):
     """math : math ADD math"""
     p[0]=p[1]+p[3]
@@ -70,3 +76,4 @@ if __name__=='__main__':
             print(' [ERROR] %s %s'%(type(e),e))
         else:
             print(' = %s (%.5f)'%(result,result))
+            global_last=result
